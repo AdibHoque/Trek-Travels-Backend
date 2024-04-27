@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const app = express()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
 app.use(cors())
@@ -24,12 +24,18 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-
     const spotCollection = client.db('TrekTravels').collection('touristSpot');
 
     app.get('/touristspots', async (req, res) => {
       const cursor = spotCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/touristspots/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await spotCollection.findOne(query);
       res.send(result);
     })
 
