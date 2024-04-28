@@ -38,6 +38,13 @@ async function run() {
       const result = await spotCollection.findOne(query);
       res.send(result);
     })
+    app.get('/touristspots/user/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email }
+      const cursor = await spotCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
     app.delete('/touristspots/:id', async (req, res) => {
       const id = req.params.id;
