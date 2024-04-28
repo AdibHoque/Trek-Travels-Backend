@@ -34,17 +34,26 @@ async function run() {
 
     app.get('/touristspots/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id)
       const query = { _id: new ObjectId(id) }
       const result = await spotCollection.findOne(query);
       res.send(result);
     })
 
-    app.post('/touristspots', async (req, res) => {
-      const newSpot = req.body;
-      const result = await coffeeCollection.insertOne(newSpot);
+    app.delete('/touristspots/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await spotCollection.deleteOne(query);
       res.send(result);
     })
+
+    app.post('/touristspots', async (req, res) => {
+      const newSpot = req.body;
+      const result = await spotCollection.insertOne(newSpot);
+      res.send(result);
+    })
+
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
