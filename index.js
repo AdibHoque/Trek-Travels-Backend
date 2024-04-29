@@ -38,6 +38,7 @@ async function run() {
       const result = await spotCollection.findOne(query);
       res.send(result);
     })
+
     app.get('/touristspots/user/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email }
@@ -59,8 +60,30 @@ async function run() {
       res.send(result);
     })
 
+    app.put('/touristspots/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updatedSpot = req.body;
 
+      const spot = {
+        $set: {
+          image: updatedSpot.image,
+          tourists_spot_name: updatedSpot.tourists_spot_name,
+          country_name: updatedSpot.country_name,
+          location: updatedSpot.location,
+          short_description: updatedSpot.short_description,
+          average_cost: updatedSpot.average_cost,
+          seasonality: updatedSpot.seasonality,
+          travel_time: updatedSpot.travel_time,
+          total_visitors_per_year: updatedSpot.total_visitors_per_year,
+          email: updatedSpot.email,
+          username: updatedSpot.username,
+        }
+      }
 
+      const result = await spotCollection.updateOne(query, spot);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
