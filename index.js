@@ -25,9 +25,31 @@ async function run() {
     // await client.connect();
 
     const spotCollection = client.db('TrekTravels').collection('touristSpot');
+    const countryCollection = client.db('TrekTravels').collection('countries');
 
     app.get('/touristspots', async (req, res) => {
       const cursor = spotCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/touristspots/sort/:type', async (req, res) => {
+      const type = req.params.type;
+      if (type == "asc") {
+        const cursor = spotCollection.find().sort({ "average_cost": -1 })
+        const result = await cursor.toArray();
+        res.send(result);
+      }
+      if (type == "desc") {
+        const cursor = spotCollection.find().sort({ "average_cost": 1 })
+        const result = await cursor.toArray();
+        res.send(result);
+      }
+      else return;
+    })
+
+    app.get('/countries', async (req, res) => {
+      const cursor = countryCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
@@ -42,6 +64,14 @@ async function run() {
     app.get('/touristspots/user/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email }
+      const cursor = await spotCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/touristspots/country/:countryname', async (req, res) => {
+      const country = req.params.countryname;
+      const query = { country_name: country }
       const cursor = await spotCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
